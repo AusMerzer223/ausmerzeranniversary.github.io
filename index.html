@@ -716,7 +716,7 @@
         // По умолчанию ищет локальный файл, при отсутствии падает на эстетичный плейсхолдер Unsplash
         localSrc: `photos/Photo_${idx}.jpg`,
         fallbackSrc: placeholderSvg(idx),
-        candidates: [`photos/Photo_${idx}.jpg`, `photos/photo_${idx}.jpg`, placeholderSvg(idx)],
+        candidates: [`photos/Photo_${idx}.jpg`, `Photo_${idx}.jpg`, `photos/photo_${idx}.jpg`, `photo_${idx}.jpg`, placeholderSvg(idx)],
         caption: `Наш памятный кадр #${idx}`
       };
     });
