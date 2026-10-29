@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Наша история | С Годовщиной ❤️</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- Google Fonts: Inter & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            rosewine: {
+              50: '#fdf2f4', 300: '#fda4af', 950: '#2a0310',
+              100: '#fce7eb',
+              400: '#fb7185',
+              500: '#f43f5e',
+              600: '#e11d48',
+              800: '#9f1239',
+              900: '#4c0519',
+            },
+            night: {
+              950: '#070a0f',
+              900: '#0b0f17',
+              800: '#131b2a',
+              700: '#1e293b'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+          },
+          animation: {
+            'marquee-slow': 'marquee 70s linear infinite',
+            'float-slow': 'float 6s ease-in-out infinite',
+            'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
+          },
+          keyframes: {
+            marquee: {
+              '0%': { transform: 'translateX(0%)' },
+              '100%': { transform: 'translateX(-50%)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            pulseSubtle: {
+              '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+              '50%': { opacity: '0.8', transform: 'scale(1.05)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Кастомный скроллбар */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #e11d48;
+    }
+
+    /* Эффект застывания ленты при наведении */
+    .marquee-container:hover .marquee-track {
+      animation-play-state: paused;
+    }
+
+    /* Неоновое свечение */
+    .glow-rose {
+      box-shadow: 0 0 35px -5px rgba(225, 29, 72, 0.35);
+    }
+    .glow-rose-sm {
+      box-shadow: 0 0 15px -2px rgba(225, 29, 72, 0.25);
+    }
+    
+    /* Стилизованные карточки с блуром */
+    .glass-card {
+      background: rgba(19, 27, 42, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card:hover {
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+  
+    html { scroll-padding-top: 5rem; }
+    @media (max-width: 767px) { html { scroll-padding-top: 7.5rem; } }
+
+    /* Ползунки (appearance-none прятал бегунок) */
+    input[type=range] { -webkit-appearance: none; appearance: none; background: transparent !important; height: 14px !important; cursor: pointer; }
+    input[type=range]::-webkit-slider-runnable-track { height: 6px; border-radius: 9999px; background: linear-gradient(to right, #e11d48 var(--fill, 0%), #1e293b var(--fill, 0%)); }
+    input[type=range]::-moz-range-track { height: 6px; border-radius: 9999px; background: #1e293b; }
+    input[type=range]::-moz-range-progress { height: 6px; border-radius: 9999px; background: #e11d48; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -4px; border-radius: 50%; background: #fff; border: 2px solid #e11d48; }
+    input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid #e11d48; }
+
+    /* Винил: крутится без сброса при паузе */
+    @keyframes vspin { to { transform: rotate(360deg); } }
+    .vinyl-spin { animation: vspin 6s linear infinite; animation-play-state: paused; }
+    .vinyl-spin.playing { animation-play-state: running; }
+
+    @keyframes modalIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: none; } }
+    .modal-in { animation: modalIn .2s ease-out; }
+
+    /* Тест */
+    .quiz-option-btn:disabled { cursor: default; }
+    .quiz-option-btn:disabled:not(.is-correct):not(.is-wrong) { opacity: .55; }
+    .quiz-option-btn.is-correct { background: rgba(2,44,34,.6) !important; border-color: #10b981 !important; color: #6ee7b7 !important; }
+    .quiz-option-btn.is-wrong { background: rgba(76,5,25,.6) !important; border-color: #f43f5e !important; color: #fda4af !important; }
+
+    /* 25 причин: карточка открывается по клику */
+    .reason-card .reason-text { filter: blur(8px); opacity: .25; transition: filter .5s, opacity .5s; user-select: none; }
+    .reason-card .reason-hint { transition: opacity .3s; }
+    .reason-card.revealed .reason-text { filter: none; opacity: 1; user-select: auto; }
+    .reason-card.revealed .reason-hint { opacity: 0; }
+    .reason-card.revealed { border-color: rgba(244,63,94,.5); box-shadow: 0 0 15px -2px rgba(225,29,72,.25); }
+    .reason-card.revealed .heart { color: #f43f5e; fill: #f43f5e; }
+
+    #marqueeBox { touch-action: pan-y; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body class="bg-night-900 text-slate-200 font-sans antialiased selection:bg-rosewine-500 selection:text-white min-h-screen relative overflow-x-hidden">
+
+  <!-- Фоновые декоративные сферы -->
+  <div class="fixed top-0 left-1/4 w-96 h-96 bg-rosewine-600/10 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-subtle"></div>
+  <div class="fixed bottom-1/4 right-10 w-96 h-96 bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+
+  <!-- ==================== HEADER НАВИГАЦИЯ ==================== -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-night-950/75 backdrop-blur-md border-b border-slate-800/80">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="#hero" class="flex items-center gap-2 group">
+        <span class="w-8 h-8 rounded-full bg-rosewine-500/20 flex items-center justify-center text-rosewine-400 group-hover:scale-110 transition-transform">
+          <i data-lucide="heart" class="w-4 h-4 fill-rosewine-500 text-rosewine-500"></i>
+        </span>
+        <span class="font-serif italic text-lg tracking-wide text-white group-hover:text-rosewine-400 transition-colors">US • 365+ Дней</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-xs uppercase tracking-wider text-slate-400 font-medium">
+        <a href="#gallery" class="hover:text-rosewine-400 transition-colors">Наши Фоточки</a>
+        <a href="#phases" class="hover:text-rosewine-400 transition-colors">Фазы</a>
+        <a href="#reasons" class="hover:text-rosewine-400 transition-colors">25 Причин</a>
+        <a href="#quiz" class="hover:text-rosewine-400 transition-colors">Игра</a>
+        <a href="#letter" class="hover:text-rosewine-400 transition-colors">Письмо</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button id="devModalBtn" class="px-3 py-1.5 rounded-full text-xs font-mono bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700 hover:border-rosewine-500/40 transition-all flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="terminal" class="w-3.5 h-3.5 text-rosewine-400"></i>
+          <span>Dev Log</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Мобильная навигация -->
+  <nav class="md:hidden fixed top-16 left-0 right-0 z-30 bg-night-950/80 backdrop-blur-md border-b border-slate-800/80 flex gap-5 overflow-x-auto whitespace-nowrap px-4 py-2 text-[11px] uppercase tracking-wider text-slate-400 font-medium">
+    <a href="#gallery" class="hover:text-rosewine-400">Фото</a>
+    <a href="#phases" class="hover:text-rosewine-400">Фазы</a>
+    <a href="#reasons" class="hover:text-rosewine-400">Причины</a>
+    <a href="#quiz" class="hover:text-rosewine-400">Игра</a>
+    <a href="#letter" class="hover:text-rosewine-400">Письмо</a>
+  </nav>
+
+  <!-- ==================== 1. HERO SECTION ==================== -->
+  <section id="hero" class="min-h-screen pt-36 md:pt-28 pb-16 flex flex-col justify-center items-center text-center px-4 relative">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rosewine-900/40 border border-rosewine-500/30 text-rosewine-400 text-xs font-medium uppercase tracking-widest mb-6 animate-float-slow">
+      <i data-lucide="sparkles" class="w-3.5 h-3.5 text-rosewine-400"></i>
+      Особенный день для нас двоих
+    </div>
+
+    <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white max-w-4xl leading-tight">
+      Целый год, в котором <br class="hidden sm:inline" />
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-rosewine-500 to-pink-500">
+        было всё самое настоящее
+      </span>
+    </h1>
+
+    <p class="mt-6 text-slate-400 max-w-xl text-base sm:text-lg leading-relaxed font-light">
+      От случайных взглядов и робких улыбок до моментов, когда слова уже не требовались. Это летопись нашей первой совместной даты.
+    </p>
+
+    <!-- Живой счетчик отношений -->
+    <div class="mt-10 w-full max-w-3xl glass-card rounded-2xl p-6 glow-rose-sm">
+      <div class="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4 flex items-center justify-center gap-1.5">
+        <i data-lucide="clock" class="w-3.5 h-3.5 text-rosewine-500"></i>
+        <span>Мы вместе уже:</span>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center" id="counterGrid">
+        <div class="bg-night-950/60 p-3.5 rounded-xl border border-slate-800">
+          <div id="cnt-days" class="text-3xl sm:text-4xl font-bold text-white font-mono">000</div>
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 mt-1">Дней</div>
+        </div>
+        <div class="bg-night-950/60 p-3.5 rounded-xl border border-slate-800">
+          <div id="cnt-hours" class="text-3xl sm:text-4xl font-bold text-rosewine-400 font-mono">00</div>
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 mt-1">Часов</div>
+        </div>
+        <div class="bg-night-950/60 p-3.5 rounded-xl border border-slate-800">
+          <div id="cnt-minutes" class="text-3xl sm:text-4xl font-bold text-white font-mono">00</div>
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 mt-1">Минут</div>
+        </div>
+        <div class="bg-night-950/60 p-3.5 rounded-xl border border-slate-800">
+          <div id="cnt-seconds" class="text-3xl sm:text-4xl font-bold text-rosewine-400 font-mono">00</div>
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 mt-1">Секунд</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-wrap gap-4 justify-center">
+      <a href="#gallery" class="px-6 py-3 rounded-full bg-gradient-to-r from-rosewine-600 to-rosewine-500 text-white font-medium text-sm hover:brightness-110 transition shadow-lg shadow-rosewine-600/30 flex items-center gap-2">
+        <span>Открыть воспоминания</span>
+        <i data-lucide="arrow-down" class="w-4 h-4"></i>
+      </a>
+      <a href="#letter" class="px-6 py-3 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-200 font-medium text-sm border border-slate-700 transition flex items-center gap-2">
+        <i data-lucide="mail" class="w-4 h-4 text-rosewine-400"></i>
+        <span>Финальное послание</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== 2. ГОРИЗОНТАЛЬНАЯ ЛЕНТА 34 ФОТО ==================== -->
+  <section id="gallery" class="py-16 bg-night-950/80 border-y border-slate-800/80 overflow-hidden relative">
+    <div class="max-w-6xl mx-auto px-4 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-rosewine-400 font-semibold mb-1">Архив наших улыбок</div>
+        <h2 class="text-2xl sm:text-4xl font-serif font-bold text-white">Лента кадров одной большой истории</h2>
+      </div>
+      <p class="text-xs text-slate-400 max-w-sm">
+        Наведи курсор или зажми пальцем, чтобы остановить ленту. Кликни по карточке для просмотра во весь экран.
+      </p>
+    </div>
+
+    <!-- Бесконечный скролл-трек -->
+    <div id="marqueeBox" class="marquee-container w-full overflow-hidden py-4 cursor-grab active:cursor-grabbing">
+      <div id="marqueeTrack" class="marquee-track flex w-max will-change-transform select-none">
+        <!-- Генерируется скриптом (34 фото + дубликат для бесшовности) -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 3. 5 ФАЗ НАШИХ ОТНОШЕНИЙ ==================== -->
+  <section id="phases" class="py-24 max-w-5xl mx-auto px-4 relative">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <div class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-rosewine-400 font-semibold mb-2">
+        <i data-lucide="milestone" class="w-3.5 h-3.5"></i>
+        Хроника развития
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-serif font-bold text-white">Пять ключевых фаз года</h2>
+      <p class="text-slate-400 text-sm sm:text-base mt-3">
+        Каждый отрезок времени приносил что-то своё: первые неловкие разговоры, ночные откровения, поддержку, иногда грусть, но абсолютное единение.
+      </p>
+    </div>
+
+    <!-- Временная шкала -->
+    <div class="relative border-l-2 border-slate-800 ml-4 md:ml-32 space-y-12">
+
+      <!-- Фаза 1 -->
+      <div class="relative pl-8 md:pl-10 group">
+        <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-night-900 border-2 border-rosewine-500 group-hover:scale-125 group-hover:bg-rosewine-500 transition-all"></div>
+        <div class="md:absolute md:-left-36 md:top-1 text-xs uppercase tracking-wider font-mono text-rosewine-400 font-bold mb-1 md:mb-0">
+          Фаза 01
+        </div>
+        <div class="glass-card rounded-2xl p-6 sm:p-7 hover:border-rosewine-500/30 transition-all">
+          <div class="text-xs text-slate-400 font-mono mb-1">21 сентября — 21 ноября 2025</div>
+          <h3 class="text-xl sm:text-2xl font-serif font-bold text-white mb-3">Начало и первые искры</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Тот самый момент, когда всё закрутилось с бешеной скоростью. Первые свидания, бесконечные переписки до утра, глупые шутки и чувство, что мы знаем друг друга уже целую вечность, хотя прошло всего пару недель
+          </p>
+          <div class="inline-flex items-center gap-2 text-xs font-medium text-rosewine-400/90 bg-rosewine-950/60 px-3 py-1 rounded-full border border-rosewine-800/40">
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+            Тег: Рождение искры & первый кофе
+          </div>
+        </div>
+      </div>
+
+      <!-- Фаза 2 -->
+      <div class="relative pl-8 md:pl-10 group">
+        <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-night-900 border-2 border-rosewine-500 group-hover:scale-125 group-hover:bg-rosewine-500 transition-all"></div>
+        <div class="md:absolute md:-left-36 md:top-1 text-xs uppercase tracking-wider font-mono text-rosewine-400 font-bold mb-1 md:mb-0">
+          Фаза 02
+        </div>
+        <div class="glass-card rounded-2xl p-6 sm:p-7 hover:border-rosewine-500/30 transition-all">
+          <div class="text-xs text-slate-400 font-mono mb-1">21 ноября 2025 — 21 февраля 2026</div>
+          <h3 class="text-xl sm:text-2xl font-serif font-bold text-white mb-3">Тихая ночь - Смертельная ночь</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Кошмар, который порой хочется стереть раз и навсегда. Мы пережили его, это доказало лишь то, что мы сильнее 9 пар из 10
+          </p>
+          <div class="inline-flex items-center gap-2 text-xs font-medium text-rosewine-400/90 bg-rosewine-950/60 px-3 py-1 rounded-full border border-rosewine-800/40">
+            <i data-lucide="snowflake" class="w-3.5 h-3.5"></i>
+            Тег: Снег, мороз и ужас
+          </div>
+        </div>
+      </div>
+
+      <!-- Фаза 3 -->
+      <div class="relative pl-8 md:pl-10 group">
+        <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-night-900 border-2 border-rosewine-500 group-hover:scale-125 group-hover:bg-rosewine-500 transition-all"></div>
+        <div class="md:absolute md:-left-36 md:top-1 text-xs uppercase tracking-wider font-mono text-rosewine-400 font-bold mb-1 md:mb-0">
+          Фаза 03
+        </div>
+        <div class="glass-card rounded-2xl p-6 sm:p-7 hover:border-rosewine-500/30 transition-all">
+          <div class="text-xs text-slate-400 font-mono mb-1">21 февраля — 21 апреля 2026</div>
+          <h3 class="text-xl sm:text-2xl font-serif font-bold text-white mb-3">День, который не наступит</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Если бы мне сказали назвать худший и одновременно лучший период моей жизни - это этот отрезок. День, которому не суждено настать, но время закончиться
+          </p>
+          <div class="inline-flex items-center gap-2 text-xs font-medium text-rosewine-400/90 bg-rosewine-950/60 px-3 py-1 rounded-full border border-rosewine-800/40">
+            <i data-lucide="sun" class="w-3.5 h-3.5"></i>
+            Тег: Весна и переломный момент
+          </div>
+        </div>
+      </div>
+
+      <!-- Фаза 4 -->
+      <div class="relative pl-8 md:pl-10 group">
+        <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-night-900 border-2 border-rosewine-500 group-hover:scale-125 group-hover:bg-rosewine-500 transition-all"></div>
+        <div class="md:absolute md:-left-36 md:top-1 text-xs uppercase tracking-wider font-mono text-rosewine-400 font-bold mb-1 md:mb-0">
+          Фаза 04
+        </div>
+        <div class="glass-card rounded-2xl p-6 sm:p-7 hover:border-rosewine-500/30 transition-all">
+          <div class="text-xs text-slate-400 font-mono mb-1">21 апреля — 21 июля 2026</div>
+          <h3 class="text-xl sm:text-2xl font-serif font-bold text-white mb-3">Летние приключения и драйв</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Длинные закаты, спонтанные прогулки, мороженое и смех до боли в животе. Период полной лёгкости и осознания, что самый лучший отдых — это когда ты рядом, где бы мы ни находились, неважно какое между вами расстояние
+          </p>
+          <div class="inline-flex items-center gap-2 text-xs font-medium text-rosewine-400/90 bg-rosewine-950/60 px-3 py-1 rounded-full border border-rosewine-800/40">
+            <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+            Тег: Ночной город & чистый кайф
+          </div>
+        </div>
+      </div>
+
+      <!-- Фаза 5 -->
+      <div class="relative pl-8 md:pl-10 group">
+        <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-night-900 border-2 border-rosewine-500 group-hover:scale-125 group-hover:bg-rosewine-500 transition-all"></div>
+        <div class="md:absolute md:-left-36 md:top-1 text-xs uppercase tracking-wider font-mono text-rosewine-400 font-bold mb-1 md:mb-0">
+          Фаза 05
+        </div>
+        <div class="glass-card rounded-2xl p-6 sm:p-7 border-rosewine-500/40 glow-rose-sm transition-all">
+          <div class="text-xs text-rosewine-400 font-mono mb-1">21 июля — 21 сентября 2026</div>
+          <h3 class="text-xl sm:text-2xl font-serif font-bold text-white mb-3">Наш рубеж и пересечённый Рубикон</h3>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">
+            Финал первого года и начало новой главы. Полная синхронизация мыслей, совместное преодоление любых проблем вместе, и осознание того, что всё впереди
+          </p>
+          <div class="inline-flex items-center gap-2 text-xs font-medium text-rosewine-400/90 bg-rosewine-950/60 px-3 py-1 rounded-full border border-rosewine-800/40">
+            <i data-lucide="infinity" class="w-3.5 h-3.5"></i>
+            Тег: Год позади. Навсегда впереди.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================== 4. АУДИОПЛЕЕР (10 ТРЕКОВ) ==================== -->
+  <section class="py-12 bg-night-950/90 border-y border-slate-800/80">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="glass-card rounded-2xl p-6 sm:p-8">
+        <div class="flex flex-col md:flex-row items-center gap-6">
+          
+          <!-- Обложка винила -->
+          <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-tr from-slate-900 to-rosewine-900 flex-shrink-0 flex items-center justify-center border border-slate-700/80 shadow-inner group">
+            <div id="vinylDisk" class="w-20 h-20 rounded-full border-4 border-slate-800 bg-night-950 flex items-center justify-center shadow-lg vinyl-spin">
+              <i data-lucide="music" class="w-8 h-8 text-rosewine-400"></i>
+            </div>
+            <div class="absolute inset-0 rounded-2xl ring-1 ring-white/10 pointer-events-none"></div>
+          </div>
+
+          <!-- Управление плеером -->
+          <div class="flex-grow w-full">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded bg-rosewine-950 text-rosewine-400 border border-rosewine-900 font-mono">Плейлист Года (10 треков)</span>
+                <h3 id="currentTrackTitle" class="text-lg sm:text-xl font-bold text-white mt-1">Загрузка трека...</h3>
+                <p id="currentTrackArtist" class="text-xs text-slate-400">Артист</p>
+              </div>
+              <span id="trackIndexBadge" class="text-xs font-mono text-slate-500">1 / 10</span>
+            </div>
+
+            <!-- Полоса перемотки -->
+            <div class="mt-4">
+              <input id="progressBar" type="range" min="0" max="100" value="0" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rosewine-500">
+              <div class="flex justify-between text-[11px] font-mono text-slate-500 mt-1">
+                <span id="currentTime">0:00</span>
+                <span id="totalDuration">0:00</span>
+              </div>
+            </div>
+
+            <!-- Кнопки плеера -->
+            <div class="flex items-center justify-between mt-4">
+              <div class="flex items-center gap-3">
+                <button id="prevBtn" class="p-2.5 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                  <i data-lucide="skip-back" class="w-5 h-5"></i>
+                </button>
+                <button id="playBtn" class="p-3.5 rounded-full bg-rosewine-600 hover:bg-rosewine-500 text-white transition transform active:scale-95 shadow-md shadow-rosewine-600/30">
+                  <i id="playIcon" data-lucide="play" class="w-5 h-5 fill-current"></i>
+                </button>
+                <button id="nextBtn" class="p-2.5 rounded-full hover:bg-slate-800 text-slate-300 hover:text-white transition">
+                  <i data-lucide="skip-forward" class="w-5 h-5"></i>
+                </button>
+              </div>
+
+              <!-- Громкость и выпадающий список -->
+              <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2">
+                  <i data-lucide="volume-2" class="w-4 h-4 text-slate-400"></i>
+                  <input id="volumeBar" type="range" min="0" max="1" step="0.05" value="0.8" class="w-20 h-1 bg-slate-800 rounded appearance-none cursor-pointer accent-rosewine-500">
+                </div>
+                <button id="togglePlaylistBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs text-slate-300 hover:bg-slate-700 transition flex items-center gap-1.5">
+                  <i data-lucide="list-music" class="w-3.5 h-3.5"></i>
+                  <span>Список</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Список 10 треков (аккордеон) -->
+            <div id="playlistContainer" class="hidden mt-4 pt-4 border-t border-slate-800/80 max-h-48 overflow-y-auto space-y-1 pr-1">
+              <!-- Сюда генерятся 10 треков -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Скрытый аудио-тег -->
+  <audio id="audioElement" preload="metadata"></audio>
+
+  <!-- ==================== 5. 25 ПРИЧИН ПОЧЕМУ Я ЛЮБЛЮ ИМЕННО ТЕБЯ ==================== -->
+  <section id="reasons" class="py-24 max-w-6xl mx-auto px-4">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <div class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-rosewine-400 font-semibold mb-2">
+        <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+        Только чистая правда
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-serif font-bold text-white">25 причин моей любви</h2>
+      <p class="text-slate-400 text-sm sm:text-base mt-3">
+        Нажимай на любую карточку, чтобы открыть секрет. Каждая мелочь делает тебя особенной для меня.
+        <span id="reasonsCounter" class="block mt-2 text-xs font-mono text-rosewine-400"></span>
+      </p>
+    </div>
+
+    <!-- Сетка из 25 карточек -->
+    <div id="reasonsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <!-- Генерируется из массива в скрипте -->
+    </div>
+  </section>
+
+  <!-- ==================== 6. ИНТЕРАКТИВНАЯ ИГРА: «НИКОГДА НЕ ГОВОРИ НИКОГДА» ==================== -->
+  <section id="quiz" class="py-24 bg-night-950/70 border-y border-slate-800/80 relative">
+    <div class="max-w-2xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-rosewine-400 font-semibold mb-2">
+          <i data-lucide="gamepad-2" class="w-3.5 h-3.5"></i>
+          Интерактивный тест
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-white">«Никогда не говори никогда»</h2>
+        <p class="text-slate-400 text-sm mt-2">
+          5 вопросов про нас, наши привычки и маленькие секреты. Посмотрим, насколько хорошо ты помнишь наши моменты!
+        </p>
+      </div>
+
+      <!-- Контейнер игры -->
+      <div id="quizContainer" class="glass-card rounded-2xl p-6 sm:p-8 glow-rose-sm relative overflow-hidden">
+        
+        <!-- Верхний статус -->
+        <div class="flex items-center justify-between text-xs font-mono text-slate-400 mb-6 pb-4 border-b border-slate-800">
+          <span id="quizProgressText">Вопрос 1 из 5</span>
+          <span id="quizScoreText" class="text-rosewine-400 font-bold">Очки: 0</span>
+        </div>
+
+        <!-- Текст вопроса -->
+        <div id="quizQuestionBox" class="mb-6">
+          <h3 id="quizQuestionText" class="text-lg sm:text-xl font-bold text-white leading-snug">
+            Загрузка вопроса...
+          </h3>
+        </div>
+
+        <!-- Варианты ответов -->
+        <div id="quizAnswersGrid" class="grid grid-cols-1 gap-3 mb-6">
+          <!-- 4 кнопки с ответами генерируются JS -->
+        </div>
+
+        <!-- Поле с мгновенным комментарием после ответа -->
+        <div id="quizFeedbackBox" class="hidden p-4 rounded-xl text-xs sm:text-sm font-medium transition-all mb-4"></div>
+
+        <!-- Кнопка перехода к следующему -->
+        <div class="flex justify-end">
+          <button id="quizNextBtn" class="hidden px-5 py-2.5 rounded-xl bg-rosewine-600 hover:bg-rosewine-500 text-white text-xs uppercase tracking-wider font-semibold transition flex items-center gap-2">
+            <span id="quizNextLabel">Следующий вопрос</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Финальный экран теста (скрыт по умолчанию) -->
+        <div id="quizResultScreen" class="hidden text-center py-6">
+          <div class="w-16 h-16 rounded-full bg-rosewine-500/20 text-rosewine-400 mx-auto flex items-center justify-center mb-4">
+            <i data-lucide="award" class="w-8 h-8"></i>
+          </div>
+          <h3 class="text-2xl font-serif font-bold text-white mb-2">Тест успешно пройден!</h3>
+          <p id="quizFinalScoreMsg" class="text-slate-300 text-sm mb-6 max-w-md mx-auto">
+            Ты набрала максимальный балл! Впрочем, кто бы сомневался.
+          </p>
+          <button id="quizRestartBtn" class="px-6 py-2.5 rounded-full bg-slate-800 hover:bg-slate-700 text-white text-xs uppercase tracking-wider font-semibold transition inline-flex items-center gap-2">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            Пройти снова
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 7. ИТОГИ & 8. МОЁ ОБРАЩЕНИЕ ==================== -->
+  <section id="letter" class="py-24 max-w-4xl mx-auto px-4">
+    
+    <!-- Блок «Итоги года» -->
+    <div class="glass-card rounded-2xl p-8 mb-12 border-slate-800">
+      <div class="flex items-center gap-2 text-rosewine-400 text-xs uppercase tracking-widest font-semibold mb-3">
+        <i data-lucide="bookmark-check" class="w-4 h-4"></i>
+        <span>Итоги нашего первого года</span>
+      </div>
+      <h3 class="text-2xl sm:text-3xl font-serif font-bold text-white mb-4">
+        365 дней, которые изменили всё
+      </h3>
+      <div class="text-slate-300 text-sm sm:text-base leading-relaxed space-y-4 font-light">
+        <p>
+          Если оглянуться назад, мы прошли колоссальный путь. Мы учились слышать друг друга, мириться с заморочками, говорить ртом и поддерживать в дни, когда всё валилось из рук.
+        </p>
+        <p>
+          Надеюсь, что когда ты это увидишь, то это станет очередным напоминанием о моей любви, а мне - что не всё можно купить за деньги. А порой лучше сделать руками!
+        </p>
+      </div>
+    </div>
+
+    <!-- Блок «Моё обращение» (Персональное письмо) -->
+    <div class="relative rounded-3xl p-8 sm:p-12 bg-gradient-to-b from-slate-900/90 via-night-800 to-night-950 border border-rosewine-500/30 glow-rose">
+      
+      <div class="absolute -top-4 right-8 px-4 py-1 rounded-full bg-rosewine-600 text-[11px] font-mono uppercase tracking-wider text-white shadow-md">
+        Личное послание
+      </div>
+
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-full bg-rosewine-500/20 flex items-center justify-center text-rosewine-400">
+          <i data-lucide="feather" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 class="font-serif text-xl sm:text-2xl font-bold text-white">Моё обращение к тебе</h4>
+          <p class="text-xs text-slate-400">Читать в тишине и с улыбкой</p>
+        </div>
+      </div>
+
+      <div class="max-w-none text-slate-300 font-serif text-base sm:text-lg leading-relaxed space-y-5 border-l-2 border-rosewine-500/30 pl-5 italic">
+        <p>
+          «Привет, моя любимая Ярочка.
+        </p>
+        <p>
+          Знаешь, перед каждой нашей встречей у меня до сих пор то же самое чувство предвкушения, как в тот первый раз. За этот год ты стала для меня не просто девушкой, а моим домом, моей главной опорой и самым тёплым человеком во вселенной.
+        </p>
+        <p>
+          Вместе с этой частицей и собранными воспоминаниями у меня есть для тебя слова, которые хочу повторять снова и снова. Всего 3 простых слова. Я тебя люблю. Очень и очень сильно. Помни об этом, принцесса❤️
+        </p>
+        <p>
+          Спасибо тебе за твой смех, за твоё терпение к моим ошибкам и за то, что ты делаешь меня лучшей версией себя. С нашей годовщиной, моя любимая Ярочка. Дальше — только выше и ярче.»
+        </p>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-xs text-slate-400 font-sans">
+          Всегда твой любимый • Навечно рядом
+        </div>
+        <button id="finalConfettiBtn" class="px-6 py-2.5 rounded-full bg-rosewine-600 hover:bg-rosewine-500 text-white font-medium text-xs uppercase tracking-wider transition shadow-lg shadow-rosewine-600/30 flex items-center gap-2">
+          <i data-lucide="sparkle" class="w-3.5 h-3.5"></i>
+          <span>Зажечь салют любви</span>
+        </button>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ==================== МОДАЛЬНОЕ ОКНО: «ПАВШИЕ В БОЮ С КОДОМ» ==================== -->
+  <div id="devModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-night-950 border border-slate-700 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl modal-in">
+      
+      <!-- Верхняя плашка терминала -->
+      <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+          <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+          <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+          <span class="ml-2 font-mono text-xs text-slate-400">git_commit_anniversary.log</span>
+        </div>
+        <button id="closeDevModalBtn" class="text-slate-400 hover:text-white transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Содержимое логов -->
+      <div class="p-6 font-mono text-xs sm:text-sm text-slate-300 space-y-4">
+        <div class="text-rosewine-400 font-bold flex items-center gap-2">
+          <i data-lucide="skull" class="w-4 h-4"></i>
+          <span>Окно почета: Павшие в бою за этот проект</span>
+        </div>
+        
+        <p class="text-slate-400 leading-normal text-xs">
+          Статистика бессонных часов разработки, пока никто не видел, чтобы успеть точно к нашей дате:
+        </p>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-slate-900/90 p-3 rounded-lg border border-slate-800">
+            <span class="text-slate-400 block">⚡ Энергетики:</span>
+            <span class="text-white font-bold text-base mt-1 block">9 банок</span>
+          </div>
+          <div class="bg-slate-900/90 p-3 rounded-lg border border-slate-800">
+            <span class="text-slate-400 block">🐛 Сломанный CSS:</span>
+            <span class="text-rose-400 font-bold text-base mt-1 block">47 итераций</span>
+          </div>
+          <div class="bg-slate-900/90 p-3 rounded-lg border border-slate-800">
+            <span class="text-slate-400 block">💾 Git коммитов:</span>
+            <span class="text-emerald-400 font-bold text-base mt-1 block">89 pushed</span>
+          </div>
+          <div class="bg-slate-900/90 p-3 rounded-lg border border-slate-800">
+            <span class="text-slate-400 block">🔥 Стресс перед датой:</span>
+            <span class="text-amber-400 font-bold text-base mt-1 block">200% Overload</span>
+          </div>
+        </div>
+
+        <div class="bg-rosewine-950/40 border border-rosewine-800/40 p-3 rounded-lg text-rosewine-300 text-xs">
+          <strong>Вывод компилятора:</strong> Все трудности забыты. Главное — увидеть твою улыбку. Возвращаемое значение: <code>Love_Forever == true;</code>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/80 px-6 py-3 border-t border-slate-800 flex justify-end">
+        <button id="closeDevModalBtn2" class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-sans text-white transition">
+          Закрыть консоль
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== ЛАЙТБОКС (ПРОСМОТР ФОТО В ПОЛНЫЙ ЭКРАН) ==================== -->
+  <div id="lightboxModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4">
+    <button id="closeLightbox" class="absolute top-5 right-5 text-white/70 hover:text-white p-2 rounded-full bg-night-950/50">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <div class="max-w-4xl max-h-[85vh] flex flex-col items-center">
+      <img id="lightboxImg" alt="Full view" class="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl border border-white/10">
+      <p id="lightboxCaption" class="mt-3 text-sm text-slate-300 font-mono"></p>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="py-8 bg-night-950 border-t border-slate-800 text-center text-xs text-slate-400">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        Сделано с любовью, кодом и лёгкой паникой специально для Тебя ❤️
+      </div>
+      <div class="font-mono text-[11px] text-slate-400">
+        21.09.2025 — ∞
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== JS ЛОГИКА И ДАННЫЕ ==================== -->
+  <script>
+    /* -------------------------------------------------------------
+       ДАННЫЕ: НАСТРАИВАЕМЫЕ МАССИВЫ (ФОТО, ПЛЕЙЛИСТ, ПРИЧИНЫ, ТЕСТ)
+       ------------------------------------------------------------- */
+
+    // 1. Дата начала отношений (21 сентября 2025, 00:00:00)
+    const RELATIONSHIP_START_DATE = new Date('2025-09-21T00:00:00');
+
+    // 2. 34 Фотографии для непрерывной ленты
+    // Чтобы подставить свои фото: сохрани их в папку "photos/photo_1.jpg" ... "photos/photo_34.jpg" рядом с index.html
+    const TOTAL_PHOTOS = 34;
+    const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    // Заглушка без интернета: розовое сердечко с номером кадра
+    function placeholderSvg(n) {
+      const h = [345, 335, 355, 320, 10][n % 5];
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h} 70% 28%)"/><stop offset="1" stop-color="#0b0f17"/></linearGradient></defs><rect width="600" height="800" fill="url(#g)"/><path d="M300 470c-90-62-130-110-130-160a70 70 0 0 1 130-34 70 70 0 0 1 130 34c0 50-40 98-130 160z" fill="#f43f5e" opacity=".55"/><text x="300" y="610" font-family="Georgia,serif" font-size="44" fill="#fff" text-anchor="middle" opacity=".8">Кадр ${n}</text></svg>`;
+      return 'data:image/svg+xml,' + encodeURIComponent(svg);
+    }
+    const photoList = Array.from({ length: TOTAL_PHOTOS }, (_, i) => {
+      const idx = i + 1;
+      return {
+        id: idx,
+        // По умолчанию ищет локальный файл, при отсутствии падает на эстетичный плейсхолдер Unsplash
+        localSrc: `photos/Photo_${idx}.jpg`,
+        fallbackSrc: placeholderSvg(idx),
+        candidates: [`photos/Photo_${idx}.jpg`, `photos/photo_${idx}.jpg`, placeholderSvg(idx)],
+        caption: `Наш памятный кадр #${idx}`
+      };
+    });
+
+    // 3. Плейлист на 10 треков
+    const playlist = [
+      { title: "Love Again", artist: "Dua Lipa", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+      { title: "Компасы", artist: "Сергей Лазарев", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+      { title: "A Grave Mistake", artist: "Ice Nine Kills", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+      { title: "Vermillion PT.2", artist: "Slipknot", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+      { title: "Nothing Else Matters", artist: "Metallica", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+      { title: "Ты моя невеста", artist: "Егор Крид", src: "music/6.mp3" },
+      { title: "Lonely Day", artist: "System Of A Down", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
+      { title: "Training Seasons", artist: "Dua Lipa", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+      { title: "You Are The Only One", artist: "Сергей Лазарев", src: "" },
+      { title: "Tornado of Souls", artist: "Megadeth", src: "music/10.mp3" }
+    ];
+
+    // 4. 25 Причин любви (легко редактируются тексты)
+    const loveReasons = [
+      "За твой искренний и заразительный смех",
+      "За то, как ты уютно морщишь носик",
+      "За твои тёплые ладошки на моём лице",
+      "За то, что понимаешь меня с полувзгляда",
+      "За наши разговоры обо всём на свете и на любые темы",
+      "За твою бесконечную нежность и заботу",
+      "За то, как ты делаешь всё самое простое прекрасным",
+      "За то, что терпишь мои дурацкие шутки",
+      "За твой неповторимый стиль и эстетику",
+      "За то, как горят твои глаза, когда ты увлечена",
+      "За чувство абсолютного дома рядом с тобой",
+      "За то, что веришь в меня больше, чем я сам",
+      "За совместные разговоры по ночам)",
+      "За твои кружочки в тгшку",
+      "За то, что с тобой никогда не бывает скучно молчать",
+      "За то, как ты заботишься обо мне, когда я заболеваю",
+      "За твои объятия, снимающие любой стресс за секунду",
+      "За то, как ты радуешься даже маленьким мелочам",
+      "За твоё невероятное терпение к моим ошибкам",
+      "За наши совместные прогулки без всякого маршрута",
+      "За то, какая ты настоящая и искренняя",
+      "За твои неожиданные поцелуи в щёку",
+      "За то, что ты — мой самый надёжный напарник",
+      "За то, что с тобой этот год пролетел как один миг",
+      "Просто за то, что ты существуешь в моей жизни"
+    ];
+
+    // 5. Тест: «Никогда не говори никогда» (5 вопросов по 4 варианта)
+    const quizQuestions = [
+      {
+        question: "1. Вспомни, что обычно происходит, когда мы говорим «ляжем спать пораньше»?",
+        options: [
+          "Реально ложимся в 22:30 как паиньки",
+          "Залипаем в мемы и болтаем до 3 ночи",
+          "Внезапно идём варить чай и искать сладкое",
+          "Смотрим ещё «всего одну короткую серию»"
+        ],
+        correct: 1,
+        feedback: "Классика жанра! Раньше 2 ночи наш режим ещё ни разу не побеждал :)"
+      },
+      {
+        question: "2. Наш коронный номер при походе поесть:",
+        options: [
+          "Выбираем за пару минут и спокойно едим",
+          "Выбираем 40 минут, едим всю еду молча и тихо",
+          "<<Ой, я хз, чего я хочу, я ничего не буду>>, а потом я выбираю всё за тебя и мы ржём пока едим",
+          "Не едим вовсе, питаемся святым духом"
+        ],
+        correct: 2,
+        feedback: "Конечно мы ржём как две макаки, а предварительно ты отпираешься))"
+      },
+      {
+        question: "3. Что точно способно моментально поднять тебе настроение?",
+        options: [
+          "Внезапная вкусняшка и крепкие объятия",
+          "Сложная лекция по квантовой физике",
+          "Побегать под проливным дождём без зонта",
+          "Собрать шкаф из Икеи в одиночку"
+        ],
+        correct: 0,
+        feedback: "Еда, тепло и обнимашки — беспроигрышная формула счастья!"
+      },
+      {
+        question: "4. Кто всегда побеждает, когда мы вместе?",
+        options: [
+          "Шарлито Леклер",
+          "Мейби Жорик, Хз",
+          "ТУТУТУДУ МАКС ФЕРСТАААААААППЕН",
+          "Ладно Нормис"
+        ],
+        correct: 2,
+        feedback: "В точку! Макс доминирует только тогда, когда мы рядом❤️)"
+      },
+      {
+        question: "5. Какой самый главный итог нашего совместного года?",
+        options: [
+          "Мы отъедем в дурдом скоро)",
+          "Мы стали идеальной командой и любим ещё сильнее",
+          "Мы так и не определились, кто главный",
+          "Пора начинать новый сезон, а старый я не хочу помнить"
+        ],
+        correct: 1,
+        feedback: "Абсолютно верно! Мы — единое целое, и дальше будет только круче."
+      }
+    ];
+
+    /* -------------------------------------------------------------
+       ИНИЦИАЛИЗАЦИЯ ИНТЕРФЕЙСА
+       ------------------------------------------------------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      initCounter();
+      renderPhotoMarquee();
+      renderReasonsGrid();
+      initPlayer();
+      initQuiz();
+      initDevModal();
+      initConfettiButton();
+      // Иконки превращаем в SVG ПОСЛЕ того, как весь динамический HTML отрисован
+      if (window.lucide) lucide.createIcons();
+    });
+
+    /* ==================== СЧЕТЧИК ОТНОШЕНИЙ ==================== */
+    function initCounter() {
+      const daysEl = document.getElementById('cnt-days');
+      const hoursEl = document.getElementById('cnt-hours');
+      const minsEl = document.getElementById('cnt-minutes');
+      const secsEl = document.getElementById('cnt-seconds');
+
+      function updateCounter() {
+        const now = new Date();
+        const diff = now - RELATIONSHIP_START_DATE;
+
+        if (diff < 0) {
+          daysEl.innerText = "000";
+          hoursEl.innerText = "00";
+          minsEl.innerText = "00";
+          secsEl.innerText = "00";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / 1000 / 60) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        daysEl.innerText = String(days).padStart(3, '0');
+        hoursEl.innerText = String(hours).padStart(2, '0');
+        minsEl.innerText = String(minutes).padStart(2, '0');
+        secsEl.innerText = String(seconds).padStart(2, '0');
+      }
+
+      updateCounter();
+      setInterval(updateCounter, 1000);
+    }
+
+    /* ==================== 34 ФОТО: БЕСШОВНАЯ ЛЕНТА (авто-прокрутка + перетаскивание) ==================== */
+    const lightboxModal = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+
+    function openLightbox(item) {
+      let n = 0;
+      lightboxImg.onerror = () => {
+        n++;
+        if (n < item.candidates.length) lightboxImg.src = item.candidates[n]; else lightboxImg.onerror = null;
+      };
+      lightboxImg.src = item.candidates[0];
+      lightboxCaption.textContent = item.caption;
+      lightboxModal.classList.remove('hidden');
+      lightboxModal.classList.add('flex');
+    }
+    function closeLightbox() {
+      lightboxModal.classList.add('hidden');
+      lightboxModal.classList.remove('flex');
+    }
+    document.getElementById('closeLightbox').addEventListener('click', closeLightbox);
+    lightboxModal.addEventListener('click', (e) => { if (e.target === lightboxModal) closeLightbox(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+
+    function renderPhotoMarquee() {
+      const track = document.getElementById('marqueeTrack');
+      const box = document.getElementById('marqueeBox');
+      const cards = photoList.map(item => `
+        <div class="photo-card flex-shrink-0 w-44 sm:w-60 h-64 sm:h-80 mr-4 rounded-2xl overflow-hidden glass-card relative group cursor-pointer border border-white/10 hover:border-rosewine-500/50 transition-colors duration-300" data-id="${item.id}">
+          <img src="${item.candidates[0]}" data-try="0" loading="lazy" draggable="false" alt="${item.caption}"
+               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-night-950 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity pointer-events-none"></div>
+          <div class="absolute bottom-3 left-3 right-3 text-left pointer-events-none">
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-black/60 text-rosewine-400 border border-white/10">Кадр ${item.id}</span>
+            <p class="text-xs text-white font-medium mt-1 truncate">${item.caption}</p>
+          </div>
+        </div>`).join('');
+      // Два одинаковых набора: сдвиг ровно на половину даёт бесшовную петлю
+      track.innerHTML = cards + cards;
+
+      // Нет локального фото -> заглушка (error не всплывает, ловим в capture)
+      track.addEventListener('error', (e) => {
+        const img = e.target;
+        if (img.tagName !== 'IMG') return;
+        const list = photoList[Number(img.closest('.photo-card').dataset.id) - 1].candidates;
+        const next = Number(img.dataset.try) + 1;
+        if (next < list.length) { img.dataset.try = next; img.src = list[next]; }
+      }, true);
+
+      const SPEED = 40; // px/сек
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let offset = 0, dragging = false, hovering = false, moved = 0, startX = 0, startOffset = 0, last = performance.now();
+
+      function tick(t) {
+        const dt = Math.min((t - last) / 1000, 0.1);
+        last = t;
+        if (!dragging && !hovering && !reduce) offset += SPEED * dt;
+        const half = track.offsetWidth / 2;
+        if (half) offset = ((offset % half) + half) % half;
+        track.style.transform = `translate3d(${-offset}px,0,0)`;
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      box.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') hovering = true; });
+      box.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') hovering = false; });
+      box.addEventListener('pointerdown', (e) => { dragging = true; moved = 0; startX = e.clientX; startOffset = offset; });
+      window.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - startX;
+        moved = Math.max(moved, Math.abs(dx));
+        offset = startOffset - dx;
+      });
+      const endDrag = () => { dragging = false; };
+      window.addEventListener('pointerup', endDrag);
+      window.addEventListener('pointercancel', endDrag);
+
+      track.addEventListener('click', (e) => {
+        if (moved > 6) return; // это было перетаскивание, а не клик
+        const card = e.target.closest('.photo-card');
+        if (card) openLightbox(photoList[Number(card.dataset.id) - 1]);
+      });
+    }
+
+    /* ==================== ПРИЧИНЫ ЛЮБВИ (25 КАРТОЧЕК) ==================== */
+    function renderReasonsGrid() {
+      const grid = document.getElementById('reasonsGrid');
+      const counter = document.getElementById('reasonsCounter');
+      const updateCounter = () => {
+        const opened = grid.querySelectorAll('.reason-card.revealed').length;
+        counter.textContent = `Открыто: ${opened} из ${loveReasons.length}`;
+        return opened;
+      };
+      grid.innerHTML = loveReasons.map((reason, index) => `
+        <button type="button" aria-pressed="false" class="reason-card glass-card relative rounded-2xl p-4 sm:p-5 text-left flex flex-col justify-between group transition-all duration-300 min-h-[140px]">
+          <div class="flex items-center justify-between">
+            <span class="w-7 h-7 rounded-full bg-slate-800 text-rosewine-400 font-mono text-xs flex items-center justify-center font-bold">#${index + 1}</span>
+            <i data-lucide="heart" class="heart w-4 h-4 text-slate-600 transition-colors"></i>
+          </div>
+          <p class="reason-text text-xs sm:text-sm text-white font-medium mt-3 leading-snug">${esc(reason)}</p>
+          <span class="reason-hint absolute inset-0 flex items-center justify-center text-[11px] uppercase tracking-widest text-slate-400 pointer-events-none">Нажми</span>
+        </button>`).join('');
+      updateCounter();
+
+      grid.addEventListener('click', (e) => {
+        const card = e.target.closest('.reason-card');
+        if (!card || card.classList.contains('revealed')) return;
+        card.classList.add('revealed');
+        card.setAttribute('aria-pressed', 'true');
+        if (updateCounter() === loveReasons.length && typeof confetti === 'function') {
+          confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 }, colors: ['#f43f5e', '#e11d48', '#fb7185', '#ffffff'] });
+        }
+      });
+    }
+
+    /* ==================== АУДИОПЛЕЕР ==================== */
+    let currentTrackIdx = 0;
+    let isPlaying = false;
+    const audio = document.getElementById('audioElement');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentTrackTitle = document.getElementById('currentTrackTitle');
+    const currentTrackArtist = document.getElementById('currentTrackArtist');
+    const trackIndexBadge = document.getElementById('trackIndexBadge');
+    const progressBar = document.getElementById('progressBar');
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalDurationEl = document.getElementById('totalDuration');
+    const volumeBar = document.getElementById('volumeBar');
+    const vinylDisk = document.getElementById('vinylDisk');
+    const togglePlaylistBtn = document.getElementById('togglePlaylistBtn');
+    const playlistContainer = document.getElementById('playlistContainer');
+
+    let wantPlay = false;   // хотим ли играть при смене трека
+    let srcAttempt = 0;     // 0 = локальный файл music/track_N.mp3, 1 = запасной url
+
+    // <i data-lucide> после createIcons() превращается в <svg>, поэтому иконку меняем пересборкой
+    function setPlayIcon(playing) {
+      playBtn.innerHTML = `<i data-lucide="${playing ? 'pause' : 'play'}" class="w-5 h-5 fill-current"></i>`;
+      playBtn.setAttribute('aria-label', playing ? 'Пауза' : 'Играть');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function setFill(input) {
+      const pct = ((input.value - input.min) / (input.max - input.min)) * 100;
+      input.style.setProperty('--fill', pct + '%');
+    }
+
+    function highlightTrack(idx) {
+      playlistContainer.querySelectorAll('.playlist-item').forEach((item, i) => {
+        item.className = 'playlist-item p-2 rounded-lg text-xs flex items-center justify-between cursor-pointer transition ' +
+          (i === idx ? 'bg-slate-800/80 text-rosewine-400 font-semibold' : 'hover:bg-slate-800 text-slate-400');
+      });
+    }
+
+    function trackSources(idx) {
+      const t = playlist[idx];
+      const own = t.src || t.scr || t.url || '';
+      return [...new Set([`music/${idx + 1}.mp3`, own].filter(Boolean))];
+    }
+
+    function playSafe() { audio.play().catch(() => {}); }
+
+    function initPlayer() {
+      playlistContainer.innerHTML = playlist.map((track, i) => `
+        <div class="playlist-item" data-idx="${i}">
+          <div class="flex items-center gap-2 truncate">
+            <span class="font-mono text-[10px] opacity-60">${i + 1}.</span>
+            <span class="truncate">${esc(track.title)} — ${esc(track.artist)}</span>
+          </div>
+          <i data-lucide="play" class="w-3 h-3 flex-shrink-0 opacity-70"></i>
+        </div>`).join('');
+      playlistContainer.addEventListener('click', (e) => {
+        const item = e.target.closest('.playlist-item');
+        if (item) selectTrack(Number(item.dataset.idx));
+      });
+
+      audio.volume = Number(volumeBar.value);
+      setFill(volumeBar);
+      loadTrack(0);
+
+      playBtn.addEventListener('click', togglePlay);
+      prevBtn.addEventListener('click', prevTrack);
+      nextBtn.addEventListener('click', nextTrack);
+
+      audio.addEventListener('play', () => { wantPlay = true; setPlayIcon(true); vinylDisk.classList.add('playing'); });
+      audio.addEventListener('pause', () => {
+        if (!audio.ended) wantPlay = false;
+        setPlayIcon(false);
+        vinylDisk.classList.remove('playing');
+      });
+      audio.addEventListener('timeupdate', updateProgress);
+      audio.addEventListener('ended', nextTrack);
+      audio.addEventListener('loadedmetadata', () => { totalDurationEl.textContent = formatTime(audio.duration || 0); });
+      audio.addEventListener('error', onAudioError);
+
+      progressBar.addEventListener('input', (e) => {
+        if (!audio.duration) return;
+        audio.currentTime = (e.target.value / 100) * audio.duration;
+        setFill(progressBar);
+      });
+      volumeBar.addEventListener('input', (e) => { audio.volume = Number(e.target.value); setFill(volumeBar); });
+      togglePlaylistBtn.addEventListener('click', () => playlistContainer.classList.toggle('hidden'));
+    }
+
+    function loadTrack(idx) {
+      currentTrackIdx = idx;
+      srcAttempt = 0;
+      const track = playlist[idx];
+      currentTrackTitle.textContent = track.title;
+      currentTrackArtist.textContent = track.artist;
+      trackIndexBadge.textContent = `${idx + 1} / ${playlist.length}`;
+      // Сначала файл music/N.mp3, если его нет — источник из плейлиста
+      audio.src = trackSources(idx)[0];
+      progressBar.value = 0;
+      setFill(progressBar);
+      currentTimeEl.textContent = '0:00';
+      totalDurationEl.textContent = '0:00';
+      highlightTrack(idx);
+    }
+
+    function onAudioError() {
+      const list = trackSources(currentTrackIdx);
+      srcAttempt++;
+      if (srcAttempt < list.length) {
+        audio.src = list[srcAttempt];
+        if (wantPlay) playSafe();
+      } else {
+        currentTrackArtist.textContent = `Нет файла music/${currentTrackIdx + 1}.mp3`;
+      }
+    }
+
+    function togglePlay() {
+      if (audio.paused) { wantPlay = true; playSafe(); } else { audio.pause(); }
+    }
+
+    function selectTrack(idx) {
+      wantPlay = true;
+      loadTrack(idx);
+      playSafe();
+    }
+
+    function prevTrack() {
+      loadTrack((currentTrackIdx - 1 + playlist.length) % playlist.length);
+      if (wantPlay) playSafe();
+    }
+
+    function nextTrack() {
+      loadTrack((currentTrackIdx + 1) % playlist.length);
+      if (wantPlay) playSafe();
+    }
+
+    function updateProgress() {
+      if (!audio.duration || !isFinite(audio.duration)) return;
+      progressBar.value = (audio.currentTime / audio.duration) * 100;
+      setFill(progressBar);
+      currentTimeEl.textContent = formatTime(audio.currentTime);
+    }
+
+    function formatTime(seconds) {
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    /* ==================== ТЕСТ: «НИКОГДА НЕ ГОВОРИ НИКОГДА» ==================== */
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+
+    const quizProgressText = document.getElementById('quizProgressText');
+    const quizScoreText = document.getElementById('quizScoreText');
+    const quizQuestionText = document.getElementById('quizQuestionText');
+    const quizAnswersGrid = document.getElementById('quizAnswersGrid');
+    const quizFeedbackBox = document.getElementById('quizFeedbackBox');
+    const quizNextBtn = document.getElementById('quizNextBtn');
+    const quizResultScreen = document.getElementById('quizResultScreen');
+    const quizQuestionBox = document.getElementById('quizQuestionBox');
+    const quizRestartBtn = document.getElementById('quizRestartBtn');
+
+    function initQuiz() {
+      // Обработчики вешаем ОДИН раз (раньше «Пройти снова» дублировал их и пропускал вопросы)
+      quizNextBtn.addEventListener('click', () => {
+        currentQuizIndex++;
+        if (currentQuizIndex < quizQuestions.length) loadQuizQuestion(currentQuizIndex);
+        else showQuizResults();
+      });
+      quizAnswersGrid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.quiz-option-btn');
+        if (btn && !btn.disabled) handleAnswer(Number(btn.dataset.i));
+      });
+      quizRestartBtn.addEventListener('click', resetQuiz);
+      resetQuiz();
+    }
+
+    function resetQuiz() {
+      currentQuizIndex = 0;
+      quizScore = 0;
+      quizResultScreen.classList.add('hidden');
+      quizQuestionBox.classList.remove('hidden');
+      quizAnswersGrid.classList.remove('hidden');
+      loadQuizQuestion(0);
+    }
+
+    function loadQuizQuestion(index) {
+      const q = quizQuestions[index];
+      const last = index === quizQuestions.length - 1;
+      quizProgressText.textContent = `Вопрос ${index + 1} из ${quizQuestions.length}`;
+      quizScoreText.textContent = `Очки: ${quizScore}`;
+      quizQuestionText.textContent = q.question.replace(/^\d+\.\s*/, '');
+      document.getElementById('quizNextLabel').textContent = last ? 'Показать результат' : 'Следующий вопрос';
+      quizFeedbackBox.classList.add('hidden');
+      quizNextBtn.classList.add('hidden');
+
+      quizAnswersGrid.innerHTML = q.options.map((opt, i) => `
+        <button type="button" data-i="${i}" class="quiz-option-btn text-left p-4 rounded-xl bg-night-950/80 hover:bg-slate-800/80 border border-slate-800 hover:border-rosewine-500/40 text-slate-300 text-xs sm:text-sm font-medium transition-all flex items-center justify-between gap-3">
+          <span>${esc(opt)}</span>
+          <span class="w-6 h-6 flex-shrink-0 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center font-mono text-[10px] text-slate-400">${String.fromCharCode(65 + i)}</span>
+        </button>`).join('');
+    }
+
+    function handleAnswer(selectedIdx) {
+      const q = quizQuestions[currentQuizIndex];
+      const buttons = quizAnswersGrid.querySelectorAll('.quiz-option-btn');
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedIdx === q.correct) {
+        quizScore += 20;
+        quizScoreText.textContent = `Очки: ${quizScore}`;
+        buttons[selectedIdx].classList.add('is-correct');
+        quizFeedbackBox.className = 'p-4 rounded-xl text-xs sm:text-sm font-medium transition-all mb-4 bg-emerald-950/40 border border-emerald-500/30 text-emerald-300';
+        quizFeedbackBox.textContent = `Верно! ${q.feedback}`;
+      } else {
+        buttons[selectedIdx].classList.add('is-wrong');
+        buttons[q.correct].classList.add('is-correct');
+        quizFeedbackBox.className = 'p-4 rounded-xl text-xs sm:text-sm font-medium transition-all mb-4 bg-rosewine-950/40 border border-rosewine-500/30 text-rosewine-300';
+        quizFeedbackBox.textContent = `Ой, не совсем! Но мы оба знаем: ${q.feedback}`;
+      }
+      quizFeedbackBox.classList.remove('hidden');
+      quizNextBtn.classList.remove('hidden');
+    }
+
+    function showQuizResults() {
+      quizQuestionBox.classList.add('hidden');
+      quizAnswersGrid.classList.add('hidden');
+      quizFeedbackBox.classList.add('hidden');
+      quizNextBtn.classList.add('hidden');
+      quizProgressText.textContent = 'Тест завершён';
+      quizScoreText.textContent = `Итог: ${quizScore} / 100`;
+      quizResultScreen.classList.remove('hidden');
+
+      const tail = quizScore === 100
+        ? 'Ты знаешь нашу историю безупречно. Пора переходить к финалу ❤️'
+        : quizScore >= 60
+          ? 'Очень достойно! Кое-что явно стоит освежить, но это только повод вспомнить ещё. Идём к финалу ❤️'
+          : 'Кажется, нам стоит чаще вспоминать наши моменты. Хорошо, что впереди ещё целая жизнь для этого ❤️';
+      document.getElementById('quizFinalScoreMsg').textContent = `Твой результат: ${quizScore} баллов из 100 возможных! ${tail}`;
+
+      if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+    }
+
+    /* ==================== ОКНО DEV STATS ==================== */
+    function initDevModal() {
+      const modal = document.getElementById('devModal');
+      const open = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); };
+      const close = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+
+      document.getElementById('devModalBtn').addEventListener('click', open);
+      document.getElementById('closeDevModalBtn').addEventListener('click', close);
+      document.getElementById('closeDevModalBtn2').addEventListener('click', close);
+      modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    }
+
+    /* ==================== КОНФЕТТИ В ФИНАЛЕ ==================== */
+    function initConfettiButton() {
+      document.getElementById('finalConfettiBtn').addEventListener('click', () => {
+        if (typeof confetti !== 'function') return;
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#f43f5e', '#e11d48', '#fb7185', '#ffffff'] });
+      });
+    }
+  </script>
+</body>
+</html>
